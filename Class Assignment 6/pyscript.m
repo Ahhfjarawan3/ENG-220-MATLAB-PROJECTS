@@ -1,5 +1,5 @@
 %Configure Python in MATLAB
-pyversion('C:/path/to/python.exe');
+pyversion('C:/bin/python19/python.exe');
 
 %Calling Python Functions from MATLAB
 mylist = py.list({'apple', 'banana', 'orange'});
@@ -12,7 +12,6 @@ result = py_math.sqrt(25);
 disp(result);
 
 %Running Custom Python Scripts
-reverse_module = py.importlib.import_module('reverse_string');
 my_str = 'Hello MATLAB';
-reversed_str = reverse_module.reverse_string(my_str);
+reversed_str = py.str(my_str(end:-1:1));
 disp(reversed_str);
