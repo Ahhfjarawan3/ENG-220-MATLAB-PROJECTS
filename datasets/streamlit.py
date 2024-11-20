@@ -31,7 +31,7 @@ def preprocess_city_data(city_data):
 def plot_city_pollutants(city_data, city_name):
     st.write(f"Selected City: {city_name}")
     
-    city_data = city_data[city_data['Core Based Statistical Area'] == city_name]
+    city_data = city_data[city_data['CBSA'] == city_name]
     st.write("Filtered Data for Selected City:", city_data)
     
     years = [str(year) for year in range(2000, 2023 + 1)]
@@ -74,7 +74,7 @@ city_data = load_city_data()
 city_data = preprocess_city_data(city_data)
 
 # City selection
-city_options = city_data['Core Based Statistical Area'].unique()
+city_options = city_data['Core Based Statistical Area'].dropna().unique()
 selected_city = st.sidebar.selectbox("Choose a city", city_options)
 
 # Plot city pollutants
