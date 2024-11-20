@@ -74,7 +74,7 @@ city_data = load_city_data()
 city_data = preprocess_city_data(city_data)
 
 # City selection
-city_options = city_data['Core Based Statistical Area'].dropna().unique()
+city_options = city_data['CBSA'].unique()
 selected_city = st.sidebar.selectbox("Choose a city", city_options)
 
 # Plot city pollutants
