@@ -27,6 +27,26 @@ def load_and_clean_data():
     
     return merged_data
 
+# Function to check if there is enough data to plot
+def has_enough_data(data, pollutant):
+    # Check if there are at least 3 non-NaN values
+    return data[pollutant].count() >= 3
+
+# Function to plot pollutants for a selected county and pollutant
+def plot_pollutant(data, pollutant):
+    data = data[['Year', pollutant]].dropna()
+    
+    if not has_enough_data(data, pollutant):
+        st.write("No data available for this pollutant in the selected county.")
+    else:
+        plt.figure(figsize=(12, 6))
+        plt.plot(data['Year'], data[pollutant], marker='o')
+        plt.xlabel('Year')
+        plt.ylabel(f'{pollutant} Level')
+        plt.title(f'Trend of {pollutant} in {selected_county} (2000-2023)')
+        plt.grid(True)
+        st.pyplot(plt)
+
 # Title of the app
 st.title("County Air Quality Trends")
 
@@ -45,14 +65,4 @@ selected_pollutant = st.sidebar.selectbox("Choose a pollutant", pollutant_option
 county_data = merged_data[merged_data['County'] == selected_county]
 
 # Plot data for the selected pollutant
-def plot_pollutant(data, pollutant):
-    data = data[['Year', pollutant]].dropna()
-    plt.figure(figsize=(12, 6))
-    plt.plot(data['Year'], data[pollutant], marker='o')
-    plt.xlabel('Year')
-    plt.ylabel(f'{pollutant} Level')
-    plt.title(f'Trend of {pollutant} in {selected_county} (2000-2023)')
-    plt.grid(True)
-    st.pyplot(plt)
-
 plot_pollutant(county_data, selected_pollutant)
