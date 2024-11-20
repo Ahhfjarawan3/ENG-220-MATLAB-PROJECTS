@@ -9,8 +9,9 @@ st.title("Air Quality Trends by City")
 def load_city_data():
     url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/30664fb22520cf1fbdab0ecaf20734a4932ad18f/datasets/airqualitybycity2000-2023.csv?raw=true'
     city_data = pd.read_csv(url)
-    # Fill forward the CBSA column to handle empty city names
+    # Fill forward the CBSA and Core Based Statistical Area columns to handle empty values
     city_data['CBSA'].fillna(method='ffill', inplace=True)
+    city_data['Core Based Statistical Area'].fillna(method='ffill', inplace=True)
     return city_data
 
 # Preprocess city data to focus on required pollutants and trend statistics
@@ -33,7 +34,7 @@ def plot_city_pollutants(city_data, city_info):
     
     city_cbs_code, city_name = city_info.split(" - ", 1)
     city_data = city_data[city_data['CBSA'] == city_cbs_code]
-    st.write("Filtered Data for Selected City:", city_data)
+    st.write(f"Filtered Data for Selected City ({city_name}):", city_data)
     
     years = [str(year) for year in range(2000, 2023 + 1)]
     pollutants = {
