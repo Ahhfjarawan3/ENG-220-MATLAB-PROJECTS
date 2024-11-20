@@ -9,7 +9,7 @@ st.title("Air Quality Trends by City")
 st.markdown("""
 ## Baseline Air Quality Levels
 
-- **Safe levels (in green):**
+- **<span style='color:green;'>Safe levels</span>**:
   - **O3 (Ozone):** ≤ 100 µg/m³ (8-hour mean)
   - **SO2 (Sulfur Dioxide):** ≤ 75 µg/m³ (1-hour mean)
   - **PM2.5 (Fine Particulate Matter):** ≤ 5 µg/m³ (annual mean)
@@ -18,7 +18,7 @@ st.markdown("""
   - **CO (Carbon Monoxide):** ≤ 9 ppm (8-hour mean)
   - **Pb (Lead):** ≤ 0.15 µg/m³ (rolling 3-month average)
 
-- **Normal levels (in orange):**
+- **<span style='color:orange;'>Normal levels</span>**:
   - **O3 (Ozone):** 100-150 µg/m³
   - **SO2 (Sulfur Dioxide):** 75-150 µg/m³
   - **PM2.5 (Fine Particulate Matter):** 5-15 µg/m³
@@ -27,7 +27,7 @@ st.markdown("""
   - **CO (Carbon Monoxide):** 9-15 ppm
   - **Pb (Lead):** 0.15-0.5 µg/m³
 
-- **Dangerous levels (in red):**
+- **<span style='color:red;'>Dangerous levels</span>**:
   - **O3 (Ozone):** > 150 µg/m³
   - **SO2 (Sulfur Dioxide):** > 150 µg/m³
   - **PM2.5 (Fine Particulate Matter):** > 15 µg/m³
@@ -35,7 +35,7 @@ st.markdown("""
   - **NO2 (Nitrogen Dioxide):** > 80 µg/m³
   - **CO (Carbon Monoxide):** > 15 ppm
   - **Pb (Lead):** > 0.5 µg/m³
-""")
+""", unsafe_allow_html=True)
 
 # Load the cleaned CSV dataset
 def load_city_data():
