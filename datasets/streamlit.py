@@ -16,13 +16,8 @@ def load_city_data():
 
 # Preprocess city data to focus on required pollutants and trend statistics
 def preprocess_city_data(city_data):
-    # No display of the original and filtered data shapes
-    required_pollutants = ['CO', 'NO2', 'O3', 'PM10', 'PM2.5']
-    required_statistics = ['2nd Max', 'Annual Mean', '4th Max', 'Weighted Annual Mean']
-    
-    filtered_data = city_data[(city_data['Pollutant'].isin(required_pollutants)) &
-                              (city_data['Trend Statistic'].isin(required_statistics))]
-    
+    # Remove the debug text displaying data shapes
+    filtered_data = city_data.dropna(subset=['Pollutant', 'Trend Statistic'])
     return filtered_data
 
 # Function to plot pollutants for a selected city
