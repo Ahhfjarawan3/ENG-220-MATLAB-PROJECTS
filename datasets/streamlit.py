@@ -45,7 +45,7 @@ def plot_city_pollutants(city_data, city_info):
         statistic = row['Trend Statistic']
         data_values = pd.to_numeric(row[4:], errors='coerce').fillna(0)  # Convert data to numeric and handle missing values
         
-        plt.plot(years, data_values, label=f'{pollutant} ({statistic} - {index})')
+        plt.plot(years, data_values, label=f'{pollutant} ({statistic}) - Row {index}')
     
     plt.xlabel('Year')
     plt.ylabel('Pollutant Level')
