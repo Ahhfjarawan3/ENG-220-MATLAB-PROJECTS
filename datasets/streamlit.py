@@ -5,6 +5,38 @@ import matplotlib.pyplot as plt
 # Title of the app
 st.title("Air Quality Trends by City")
 
+# Baseline information for pollutant levels
+st.markdown("""
+## Baseline Air Quality Levels
+
+- **Safe levels (in green):**
+  - **O3 (Ozone):** ≤ 100 µg/m³ (8-hour mean)
+  - **SO2 (Sulfur Dioxide):** ≤ 75 µg/m³ (1-hour mean)
+  - **PM2.5 (Fine Particulate Matter):** ≤ 5 µg/m³ (annual mean)
+  - **PM10 (Coarse Particulate Matter):** ≤ 15 µg/m³ (annual mean)
+  - **NO2 (Nitrogen Dioxide):** ≤ 40 µg/m³ (annual mean)
+  - **CO (Carbon Monoxide):** ≤ 9 ppm (8-hour mean)
+  - **Pb (Lead):** ≤ 0.15 µg/m³ (rolling 3-month average)
+
+- **Normal levels (in orange):**
+  - **O3 (Ozone):** 100-150 µg/m³
+  - **SO2 (Sulfur Dioxide):** 75-150 µg/m³
+  - **PM2.5 (Fine Particulate Matter):** 5-15 µg/m³
+  - **PM10 (Coarse Particulate Matter):** 15-45 µg/m³
+  - **NO2 (Nitrogen Dioxide):** 40-80 µg/m³
+  - **CO (Carbon Monoxide):** 9-15 ppm
+  - **Pb (Lead):** 0.15-0.5 µg/m³
+
+- **Dangerous levels (in red):**
+  - **O3 (Ozone):** > 150 µg/m³
+  - **SO2 (Sulfur Dioxide):** > 150 µg/m³
+  - **PM2.5 (Fine Particulate Matter):** > 15 µg/m³
+  - **PM10 (Coarse Particulate Matter):** > 45 µg/m³
+  - **NO2 (Nitrogen Dioxide):** > 80 µg/m³
+  - **CO (Carbon Monoxide):** > 15 ppm
+  - **Pb (Lead):** > 0.5 µg/m³
+""")
+
 # Load the cleaned CSV dataset
 def load_city_data():
     url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/30664fb22520cf1fbdab0ecaf20734a4932ad18f/datasets/airqualitybycity2000-2023.csv?raw=true'
