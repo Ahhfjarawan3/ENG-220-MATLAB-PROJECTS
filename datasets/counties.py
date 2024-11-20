@@ -1,26 +1,27 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import glob
 
-# Load and clean all datasets
+# Generate the list of dataset URLs dynamically
+base_url = "https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/ace503643ae54f6486fe708d856a01c95961489e/datasets/county_datasets/conreport"
+urls = [f"{base_url}{year}.csv?raw=true" for year in range(2000, 2023 + 1)]
+
 def load_and_clean_data():
-    # Load all CSV files from the directory
-    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/tree/ace503643ae54f6486fe708d856a01c95961489e/datasets/county_datasets'
-    files = glob.glob("url/conreport*.csv")  # Adjust this path to match your actual file paths
-    
-    # List to hold data from all files
     all_data = []
     
-    for file in files:
-        # Read each CSV file
-        df = pd.read_csv(file)
+    for url in urls:
+        # Fetch the CSV file from the URL
+        response = requests.get(url)
+        csv_data = StringIO(response.text)
+        
+        # Read the CSV file into a DataFrame
+        df = pd.read_csv(csv_data)
         
         # Replace '.' with NaN
         df.replace('.', pd.NA, inplace=True)
         
-        # Add a 'Year' column from the filename (extracting the year from the file name)
-        year = file[-8:-4]
+        # Add a 'Year' column from the URL (extracting the year from the URL)
+        year = url.split('conreport')[-1][:4]
         df['Year'] = int(year)
         
         # Append to the list
