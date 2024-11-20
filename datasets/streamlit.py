@@ -28,10 +28,11 @@ def preprocess_city_data(city_data):
     return filtered_data
 
 # Function to plot pollutants for a selected city
-def plot_city_pollutants(city_data, city_name):
-    st.write(f"Selected City: {city_name}")
+def plot_city_pollutants(city_data, city_info):
+    st.write(f"Selected City: {city_info}")
     
-    city_data = city_data[city_data['CBSA'] == city_name]
+    city_cbs_code, city_name = city_info.split(" - ", 1)
+    city_data = city_data[city_data['CBSA'] == city_cbs_code]
     st.write("Filtered Data for Selected City:", city_data)
     
     years = [str(year) for year in range(2000, 2023 + 1)]
@@ -73,9 +74,13 @@ city_data = load_city_data()
 # Preprocess data
 city_data = preprocess_city_data(city_data)
 
+# Create a dictionary mapping CBSA to city names
+city_options_dict = {f"{row['CBSA']} - {row['Core Based Statistical Area']}": row['CBSA']
+                     for _, row in city_data.iterrows()}
+
 # City selection
-city_options = city_data['CBSA'].unique()
-selected_city = st.sidebar.selectbox("Choose a city", city_options)
+city_options = list(city_options_dict.keys())
+selected_city_info = st.sidebar.selectbox("Choose a city", city_options)
 
 # Plot city pollutants
-plot_city_pollutants(city_data, selected_city)
+plot_city_pollutants(city_data, selected_city_info)
