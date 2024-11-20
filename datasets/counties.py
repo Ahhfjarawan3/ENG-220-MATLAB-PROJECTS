@@ -46,6 +46,10 @@ def plot_pollutant(data, pollutant):
         plt.title(f'Trend of {pollutant} in {selected_county} (2000-2023)')
         plt.grid(True)
         st.pyplot(plt)
+        
+        # Display the table
+        st.write("Data for selected pollutant and county:")
+        st.dataframe(data.set_index('Year'))
 
 # Title of the app
 st.title("County Air Quality Trends")
