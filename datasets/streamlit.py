@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Title of the app
-st.title("Air Quality Trends by City")
+st.title("Air Quality Visualizations")
 
 # Baseline information for pollutant levels
 st.markdown("""
@@ -37,7 +37,7 @@ st.markdown("""
   - **Pb (Lead):** > 0.5 µg/m³
 """, unsafe_allow_html=True)
 
-# Load the cleaned CSV dataset
+# Load the cleaned city CSV dataset
 def load_city_data():
     url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/30664fb22520cf1fbdab0ecaf20734a4932ad18f/datasets/airqualitybycity2000-2023.csv?raw=true'
     city_data = pd.read_csv(url)
@@ -48,7 +48,6 @@ def load_city_data():
 
 # Preprocess city data to focus on required pollutants and trend statistics
 def preprocess_city_data(city_data):
-    # Remove the debug text displaying data shapes
     filtered_data = city_data.dropna(subset=['Pollutant', 'Trend Statistic'])
     return filtered_data
 
@@ -67,7 +66,7 @@ def plot_city_pollutants(city_data, city_info):
     for index, row in city_data.iterrows():
         pollutant = row['Pollutant']
         statistic = row['Trend Statistic']
-        data_values = pd.to_numeric(row[4:], errors='coerce').fillna(0)  # Convert data to numeric and handle missing values
+        data_values = pd.to_numeric(row[4:], errors='coerce').fillna(0)
         
         plt.plot(years, data_values, label=f'{pollutant} ({statistic})')
     
@@ -78,22 +77,63 @@ def plot_city_pollutants(city_data, city_info):
     plt.grid(True)
     st.pyplot(plt)
 
-# Main Streamlit app
-st.sidebar.header("Select City")
+# Load and clean all county datasets
+def load_and_clean_data():
+    base_url = "https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/ace503643ae54f6486fe708d856a01c95961489e/datasets/county_datasets/conreport"
+    all_data = []
 
-# Load data
+    for year in range(2000, 2023 + 1):
+        url = f"{base_url}{year}.csv?raw=true"
+        
+        df = pd.read_csv(url)
+        df.replace('.', pd.NA, inplace=True)
+        df['Year'] = year
+        all_data.append(df)
+    
+    merged_data = pd.concat(all_data, ignore_index=True)
+    return merged_data
+
+# Function to check if there is enough data to plot
+def has_enough_data(data, pollutant):
+    return data[pollutant].count() >= 3
+
+# Function to plot pollutants for a selected county and pollutant
+def plot_county_pollutant(data, pollutant):
+    data = data[['Year', pollutant]].dropna()
+    
+    if not has_enough_data(data, pollutant):
+        st.write("No data available for this pollutant in the selected county.")
+    else:
+        plt.figure(figsize=(12, 6))
+        plt.plot(data['Year'], data[pollutant], marker='o')
+        plt.xlabel('Year')
+        plt.ylabel(f'{pollutant} Level')
+        plt.title(f'Trend of {pollutant} in {selected_county} (2000-2023)')
+        plt.grid(True)
+        st.pyplot(plt)
+        
+        st.write("Data for selected pollutant and county:")
+        st.dataframe(data.set_index('Year'))
+
+# Load data for both cities and counties
 city_data = load_city_data()
-
-# Preprocess data
 city_data = preprocess_city_data(city_data)
+county_data = load_and_clean_data()
 
-# Create a dictionary mapping CBSA to city names
-city_options_dict = {f"{row['CBSA']} - {row['Core Based Statistical Area']}": row['CBSA']
-                     for _, row in city_data.iterrows()}
+# Sidebar for selections
+st.sidebar.title("Select Data to Visualize")
 
 # City selection
+st.sidebar.header("City Visualization")
+city_options_dict = {f"{row['CBSA']} - {row['Core Based Statistical Area']}": row['CBSA'] for _, row in city_data.iterrows()}
 city_options = list(city_options_dict.keys())
 selected_city_info = st.sidebar.selectbox("Choose a city", city_options)
-
-# Plot city pollutants
 plot_city_pollutants(city_data, selected_city_info)
+
+# County selection
+st.sidebar.header("County Visualization")
+county_options = county_data['County'].unique()
+selected_county = st.sidebar.selectbox("Choose a county", county_options)
+pollutant_options = county_data.columns[2:-1]  # Exclude 'County Code', 'County', and 'Year'
+selected_pollutant = st.sidebar.selectbox("Choose a pollutant", pollutant_options)
+plot_county_pollutant(county_data[county_data['County'] == selected_county], selected_pollutant)
