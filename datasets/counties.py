@@ -2,27 +2,22 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Generate the list of dataset URLs dynamically
-base_url = "https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/ace503643ae54f6486fe708d856a01c95961489e/datasets/county_datasets/conreport"
-urls = [f"{base_url}{year}.csv?raw=true" for year in range(2000, 2023 + 1)]
-
+# Function to load and clean all datasets
 def load_and_clean_data():
+    base_url = "https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/ace503643ae54f6486fe708d856a01c95961489e/datasets/county_datasets/conreport"
     all_data = []
-    
-    for url in urls:
-        # Fetch the CSV file from the URL
-        response = requests.get(url)
-        csv_data = StringIO(response.text)
+
+    for year in range(2000, 2023 + 1):
+        url = f"{base_url}{year}.csv?raw=true"
         
         # Read the CSV file into a DataFrame
-        df = pd.read_csv(csv_data)
+        df = pd.read_csv(url)
         
         # Replace '.' with NaN
         df.replace('.', pd.NA, inplace=True)
         
-        # Add a 'Year' column from the URL (extracting the year from the URL)
-        year = url.split('conreport')[-1][:4]
-        df['Year'] = int(year)
+        # Add a 'Year' column
+        df['Year'] = year
         
         # Append to the list
         all_data.append(df)
