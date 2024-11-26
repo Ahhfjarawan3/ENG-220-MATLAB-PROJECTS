@@ -310,14 +310,14 @@ with tabs[2]:
     st.markdown(f"### National Trend Graph for {selected_national_pollutant}")
     plot_national_trend(selected_national_pollutant)
 
-with finance_tabs[3]:
+with tabs[3]:
     st.markdown("## Air Quality Applications and Funding")
     visualize_applications()
 
-with finance_tabs[4]:
+with tabs[4]:
     st.markdown("## Awards Granted in 2022")
     visualize_awards()
 
-with finance_tabs[5]:
+with tabs[5]:
     st.markdown("## EPA Budget from 2000-2023")
     visualize_budget()
