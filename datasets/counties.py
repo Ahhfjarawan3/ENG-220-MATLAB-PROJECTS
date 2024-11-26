@@ -60,7 +60,7 @@ def filter_applications_by_state(data, state_abbrs):
 # Visualization for Dataset 1
 def visualize_applications():
     applications_data = load_applications_data()
-    states = applications_data['Project State(s)'].str.split(', ', expand=True).stack().unique()
+    states = set(applications_data['Project State(s)'].str.split(', ', expand=True).stack())
     states_full = [STATE_ABBR.get(state, state) for state in states]
     selected_state = st.selectbox("Select a State", states_full)
     selected_state_abbrs = [abbr for abbr, full in STATE_ABBR.items() if full == selected_state]
