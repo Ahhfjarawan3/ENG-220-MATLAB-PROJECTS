@@ -214,7 +214,7 @@ with tabs[1]:
     st.markdown("### County Pollutant Graph")
     plot_county_pollutant(county_data[county_data['County'] == selected_county], selected_pollutant)
 
-    with tabs[2]:
+with tabs[2]:
     st.markdown("### National Trends of Air Quality")
     
     # Dropdown menu to select a pollutant
