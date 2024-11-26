@@ -49,12 +49,13 @@ STATE_ABBR = {
     "NY": "New York", "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma",
     "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina", "SD": "South Dakota",
     "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont", "VA": "Virginia", "WA": "Washington",
-    "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming"
+    "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming", "DC": "District of Columbia"
 }
 
 # Function to filter applications data by state
-def filter_applications_by_state(data, state):
-    return data[data['Project State(s)'].str.contains(state)]
+def filter_applications_by_state(data, state_abbrs):
+    pattern = '|'.join(state_abbrs)
+    return data[data['Project State(s)'].str.contains(pattern)]
 
 # Visualization for Dataset 1
 def visualize_applications():
@@ -62,9 +63,9 @@ def visualize_applications():
     states = applications_data['Project State(s)'].str.split(', ', expand=True).stack().unique()
     states_full = [STATE_ABBR.get(state, state) for state in states]
     selected_state = st.selectbox("Select a State", states_full)
-    selected_state_abbr = [abbr for abbr, full in STATE_ABBR.items() if full == selected_state][0]
+    selected_state_abbrs = [abbr for abbr, full in STATE_ABBR.items() if full == selected_state]
     
-    filtered_data = filter_applications_by_state(applications_data, selected_state_abbr)
+    filtered_data = filter_applications_by_state(applications_data, selected_state_abbrs)
     
     st.write("### Applications Data")
     st.dataframe(filtered_data)
