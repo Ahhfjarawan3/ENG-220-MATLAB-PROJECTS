@@ -5,6 +5,37 @@ import matplotlib.pyplot as plt
 # Title of the app
 st.title("Visualizations for Air Quality Projects")
 
+# Sidebar for baseline levels
+st.sidebar.markdown("### Baseline Air Quality Levels")
+st.sidebar.markdown("""
+- **<span style='color:green;'>Safe levels</span>**:
+  - **O3 (Ozone):** ≤ 100 µg/m³ (8-hour mean)
+  - **SO2 (Sulfur Dioxide):** ≤ 75 µg/m³ (1-hour mean)
+  - **PM2.5 (Fine Particulate Matter):** ≤ 5 µg/m³ (annual mean)
+  - **PM10 (Coarse Particulate Matter):** ≤ 15 µg/m³ (annual mean)
+  - **NO2 (Nitrogen Dioxide):** ≤ 40 µg/m³ (annual mean)
+  - **CO (Carbon Monoxide):** ≤ 9 ppm (8-hour mean)
+  - **Pb (Lead):** ≤ 0.15 µg/m³ (rolling 3-month average)
+
+- **<span style='color:orange;'>Normal levels</span>**:
+  - **O3 (Ozone):** 100-150 µg/m³
+  - **SO2 (Sulfur Dioxide):** 75-150 µg/m³
+  - **PM2.5 (Fine Particulate Matter):** 5-15 µg/m³
+  - **PM10 (Coarse Particulate Matter):** 15-45 µg/m³
+  - **NO2 (Nitrogen Dioxide):** 40-80 µg/m³
+  - **CO (Carbon Monoxide):** 9-15 ppm
+  - **Pb (Lead):** 0.15-0.5 µg/m³
+
+- **<span style='color:red;'>Dangerous levels</span>**:
+  - **O3 (Ozone):** > 150 µg/m³
+  - **SO2 (Sulfur Dioxide):** > 150 µg/m³
+  - **PM2.5 (Fine Particulate Matter):** > 15 µg/m³
+  - **PM10 (Coarse Particulate Matter):** > 45 µg/m³
+  - **NO2 (Nitrogen Dioxide):** > 80 µg/m³
+  - **CO (Carbon Monoxide):** > 15 ppm
+  - **Pb (Lead):** > 0.5 µg/m³
+""", unsafe_allow_html=True)
+
 # Function to load air quality applications data
 def load_applications_data():
     url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/airqualityapplications2024.csv?raw=true'
@@ -236,9 +267,10 @@ city_data = preprocess_city_data(city_data)
 county_data = load_and_clean_county_data()
 
 # Create tabs for visualizations
-tabs = st.tabs(["City Visualization", "County Visualization", "National Trends", "Air Quality Applications", "Awards Granted", "EPA Budget"])
+st.markdown("## Air Quality Visualizations")
+aq_tabs = st.tabs(["City Visualization", "County Visualization", "National Trends"])
 
-with tabs[0]:
+with aq_tabs[0]:
     st.markdown("### City Information")
     
     city_options_dict = {f"{row['CBSA']} - {row['Core Based Statistical Area']}": row['CBSA'] for _, row in city_data.iterrows()}
@@ -250,7 +282,7 @@ with tabs[0]:
     st.markdown("### City Pollutant Graph")
     plot_city_pollutants(city_data, selected_city_info)
 
-with tabs[1]:
+with aq_tabs[1]:
     st.markdown("### County Information")
     
     county_options = county_data['County'].unique()
@@ -263,7 +295,7 @@ with tabs[1]:
     st.markdown("### County Pollutant Graph")
     plot_county_pollutant(county_data[county_data['County'] == selected_county], selected_pollutant)
 
-with tabs[2]:
+with aq_tabs[2]:
     st.markdown("### National Trends of Air Quality")
     
     national_pollutants = ['CO', 'NO2', 'O3', 'PM10', 'PM25', 'SO2']
@@ -274,14 +306,18 @@ with tabs[2]:
     st.markdown(f"### National Trend Graph for {selected_national_pollutant}")
     plot_national_trend(selected_national_pollutant)
 
-with tabs[3]:
+st.markdown("## Finance Visualizations")
+fin_tabs = st.tabs(["Air Quality Applications", "Awards Granted", "EPA Budget"])
+
+with fin_tabs[0]:
     st.markdown("## Air Quality Applications and Funding")
     visualize_applications()
 
-with tabs[4]:
+with fin_tabs[1]:
     st.markdown("## Awards Granted in 2022")
     visualize_awards()
 
-with tabs[5]:
+with fin_tabs[2]:
     st.markdown("## EPA Budget from 2000-2023")
     visualize_budget()
+    
