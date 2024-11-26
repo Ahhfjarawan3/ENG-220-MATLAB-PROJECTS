@@ -2,24 +2,23 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Title of the app
-st.title("Air Quality and Finance Visualizations")
-
 # Function to load air quality applications data
 def load_applications_data():
-    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/airqualityapplications2024.csv'
+    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/airqualityapplications2024.csv?raw=true'
     data = pd.read_csv(url)
+    data.columns = [col.strip() for col in data.columns]  # Strip any extra spaces from column names
+    data['Proposed EPA Funding'] = data['Proposed EPA Funding'].replace('[\$,]', '', regex=True).astype(float)  # Clean funding values
     return data
 
 # Function to load awards granted data
 def load_awards_data():
-    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/AirQualityDirectAwards2022.csv'
+    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/AirQualityDirectAwards2022.csv?raw=true'
     data = pd.read_csv(url)
     return data
 
 # Function to load EPA budget data
 def load_budget_data():
-    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/EPAbudget.csv'
+    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/EPAbudget.csv?raw=true'
     data = pd.read_csv(url)
     return data
 
@@ -30,10 +29,9 @@ def plot_bar_chart(data, x, y, title, x_label, y_label):
     plt.xlabel(x_label)
     plt.ylabel(y_label)
     plt.title(title)
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=90)
     plt.grid(True)
     st.pyplot(plt)
-
 
 # Function to filter applications data by state
 def filter_applications_by_state(data, state):
@@ -51,9 +49,9 @@ def visualize_applications():
     st.dataframe(filtered_data)
     
     plot_bar_chart(filtered_data, 'Primary Applicant', 'Proposed EPA Funding', 
-                   f'Proposed EPA Funding for {selected_state}', 'Primary Applicant', 'Proposed EPA Funding')
+                   f'Proposed EPA Funding for {selected_state}', 'Primary Applicant', 'Proposed EPA Funding ($)')
     
-    total_funding = filtered_data['Proposed EPA Funding'].replace('[\$,]', '', regex=True).astype(float).sum()
+    total_funding = filtered_data['Proposed EPA Funding'].sum()
     st.write(f"### Total Proposed EPA Funding for {selected_state}: ${total_funding:,.2f}")
 
 # Function to filter awards data by EPA region
@@ -72,12 +70,13 @@ def visualize_awards():
     st.dataframe(filtered_data)
     
     plot_bar_chart(filtered_data, 'Grant Recipient', 'Amount Awarded', 
-                   f'Amount Awarded in EPA Region {selected_region}', 'Grant Recipient', 'Amount Awarded')
+                   f'Amount Awarded in EPA Region {selected_region}', 'Grant Recipient', 'Amount Awarded ($)')
     
     total_awarded = filtered_data['Amount Awarded'].replace('[\$,]', '', regex=True).astype(float).sum()
     st.write(f"### Total Amount Awarded in EPA Region {selected_region}: ${total_awarded:,.2f}")
     
     st.image('https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/eparegions.png?raw=true', caption='EPA Regions Map')
+
 # Visualization for Dataset 3
 def visualize_budget():
     budget_data = load_budget_data()
@@ -87,7 +86,7 @@ def visualize_budget():
     
     # Budget Trend
     plot_bar_chart(budget_data, 'Fiscal Year', 'Enacted Budget', 
-                   'EPA Budget Over the Years', 'Fiscal Year', 'Enacted Budget')
+                   'EPA Budget Over the Years', 'Fiscal Year', 'Enacted Budget ($)')
     
     # Workforce Trend
     plt.figure(figsize=(12, 6))
