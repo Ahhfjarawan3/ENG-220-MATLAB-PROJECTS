@@ -14,6 +14,20 @@ def load_city_data():
     city_data['Core Based Statistical Area'].fillna(method='ffill', inplace=True)
     return city_data
 
+# Function to load national trend data for a given pollutant
+def load_national_trend_data(pollutant):
+    urls = {
+        'CO': 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/National%20trend%20USA/Carbon_MonoxideNational.csv?raw=true',
+        'NO2': 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/National%20trend%20USA/Nitrogen_DioxideNational.csv?raw=true',
+        'O3': 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/National%20trend%20USA/OzoneNational.csv?raw=true',
+        'PM10': 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/National%20trend%20USA/PM10National.csv?raw=true',
+        'PM25': 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/National%20trend%20USA/PM25National.csv?raw=true',
+        'SO2': 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/National%20trend%20USA/Sulfur_DioxideNational.csv?raw=true'
+    }
+    url = urls[pollutant]
+    data = pd.read_csv(url)
+    return data
+
 # Preprocess city data to focus on required pollutants and trend statistics
 def preprocess_city_data(city_data):
     filtered_data = city_data.dropna(subset=['Pollutant', 'Trend Statistic'])
@@ -83,13 +97,33 @@ def plot_county_pollutant(data, pollutant):
         st.write("Data for selected pollutant and county:")
         st.dataframe(data.set_index('Year'))
 
+# Function to plot national trend data for a selected pollutant
+def plot_national_trend(pollutant):
+    data = load_national_trend_data(pollutant)
+    
+    plt.figure(figsize=(12, 6))
+    plt.plot(data['Year'], data['Mean'], label='Mean', marker='o')
+    plt.plot(data['Year'], data['10th Percentile'], label='10th Percentile', marker='o')
+    plt.plot(data['Year'], data['90th Percentile'], label='90th Percentile', marker='o')
+    
+    plt.xlabel('Year')
+    plt.ylabel(data['Units'].iloc[0])
+    plt.title(f'National Trend of {pollutant} (2000-2023)')
+    plt.legend()
+    plt.grid(True)
+    st.pyplot(plt)
+    
+    st.write("Data for selected pollutant:")
+    st.dataframe(data.set_index('Year'))
+
+
 # Load data for both cities and counties
 city_data = load_city_data()
 city_data = preprocess_city_data(city_data)
 county_data = load_and_clean_county_data()
 
 # Create tabs for City and County visualization
-tabs = st.tabs(["City Visualization", "County Visualization"])
+tabs = st.tabs(["City Visualization", "County Visualization", "National Trends"])
 
 with tabs[0]:
     st.markdown("### Baseline Air Quality Levels")
@@ -180,3 +214,14 @@ with tabs[1]:
     st.markdown("### County Pollutant Graph")
     plot_county_pollutant(county_data[county_data['County'] == selected_county], selected_pollutant)
 
+    with tabs[2]:
+    st.markdown("### National Trends of Air Quality")
+    
+    # Dropdown menu to select a pollutant
+    national_pollutants = ['CO', 'NO2', 'O3', 'PM10', 'PM25', 'SO2']
+    selected_national_pollutant = st.selectbox("Choose a pollutant", national_pollutants)
+    
+    st.markdown("---")  # Separator
+    
+    st.markdown(f"### National Trend Graph for {selected_national_pollutant}")
+    plot_national_trend(selected_national_pollutant)
