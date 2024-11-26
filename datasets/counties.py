@@ -7,19 +7,19 @@ st.title("Air Quality and Finance Visualizations")
 
 # Function to load air quality applications data
 def load_applications_data():
-    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finanace/airqualityapplications2024.csv?raw=true'
+    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/airqualityapplications2024.csv'
     data = pd.read_csv(url)
     return data
 
 # Function to load awards granted data
 def load_awards_data():
-    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finanace/AirQualityDirectAwards2022.csv?raw=true'
+    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/AirQualityDirectAwards2022.csv'
     data = pd.read_csv(url)
     return data
 
 # Function to load EPA budget data
 def load_budget_data():
-    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finanace/EPAbudget.csv?raw=true'
+    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/EPAbudget.csv'
     data = pd.read_csv(url)
     return data
 
