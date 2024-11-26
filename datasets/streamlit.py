@@ -267,10 +267,9 @@ city_data = preprocess_city_data(city_data)
 county_data = load_and_clean_county_data()
 
 # Create tabs for visualizations
-st.markdown("## Air Quality Visualizations")
-aq_tabs = st.tabs(["City Visualization", "County Visualization", "National Trends"])
+tabs = st.tabs(["City Visualization", "County Visualization", "National Trends", "Air Quality Applications", "Awards Granted", "EPA Budget"])
 
-with aq_tabs[0]:
+with tabs[0]:
     st.markdown("### City Information")
     
     city_options_dict = {f"{row['CBSA']} - {row['Core Based Statistical Area']}": row['CBSA'] for _, row in city_data.iterrows()}
@@ -282,7 +281,7 @@ with aq_tabs[0]:
     st.markdown("### City Pollutant Graph")
     plot_city_pollutants(city_data, selected_city_info)
 
-with aq_tabs[1]:
+with tabs[1]:
     st.markdown("### County Information")
     
     county_options = county_data['County'].unique()
@@ -295,7 +294,7 @@ with aq_tabs[1]:
     st.markdown("### County Pollutant Graph")
     plot_county_pollutant(county_data[county_data['County'] == selected_county], selected_pollutant)
 
-with aq_tabs[2]:
+with tabs[2]:
     st.markdown("### National Trends of Air Quality")
     
     national_pollutants = ['CO', 'NO2', 'O3', 'PM10', 'PM25', 'SO2']
@@ -306,18 +305,14 @@ with aq_tabs[2]:
     st.markdown(f"### National Trend Graph for {selected_national_pollutant}")
     plot_national_trend(selected_national_pollutant)
 
-st.markdown("## Finance Visualizations")
-fin_tabs = st.tabs(["Air Quality Applications", "Awards Granted", "EPA Budget"])
-
-with fin_tabs[0]:
+with tabs[3]:
     st.markdown("## Air Quality Applications and Funding")
     visualize_applications()
 
-with fin_tabs[1]:
+with tabs[4]:
     st.markdown("## Awards Granted in 2022")
     visualize_awards()
 
-with fin_tabs[2]:
+with tabs[5]:
     st.markdown("## EPA Budget from 2000-2023")
     visualize_budget()
-    
