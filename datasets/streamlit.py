@@ -149,6 +149,7 @@ def plot_bar_chart(data, x, y, title, x_label, y_label):
     plt.grid(True)
     st.pyplot(plt)
 
+# Convert state abbreviations to full state names
 STATE_ABBR = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
     "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware", "FL": "Florida", "GA": "Georgia",
