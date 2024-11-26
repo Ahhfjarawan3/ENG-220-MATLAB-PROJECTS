@@ -2,9 +2,26 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Title of the app
+st.title("Finance Visualizations for Air Quality Projects")
+
+# State name mapping
+state_mapping = {
+    'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+    'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+    'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+    'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+    'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+    'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+    'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+    'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+    'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+    'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
+}
+
 # Function to load air quality applications data
 def load_applications_data():
-    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/airqualityapplications2024.csv?raw=true'
+    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finanace/airqualityapplications2024.csv?raw=true'
     data = pd.read_csv(url)
     data.columns = [col.strip() for col in data.columns]  # Strip any extra spaces from column names
     data['Proposed EPA Funding'] = data['Proposed EPA Funding'].replace('[\$,]', '', regex=True).astype(float)  # Clean funding values
@@ -12,13 +29,13 @@ def load_applications_data():
 
 # Function to load awards granted data
 def load_awards_data():
-    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/AirQualityDirectAwards2022.csv?raw=true'
+    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finanace/AirQualityDirectAwards2022.csv?raw=true'
     data = pd.read_csv(url)
     return data
 
 # Function to load EPA budget data
 def load_budget_data():
-    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finance/EPAbudget.csv?raw=true'
+    url = 'https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/finanace/EPAbudget.csv?raw=true'
     data = pd.read_csv(url)
     return data
 
@@ -41,18 +58,20 @@ def filter_applications_by_state(data, state):
 def visualize_applications():
     applications_data = load_applications_data()
     states = applications_data['Project State(s)'].str.split(', ', expand=True).stack().unique()
-    selected_state = st.selectbox("Select a State", states)
+    state_options = {abbr: state_mapping.get(abbr, abbr) for abbr in states}
+    selected_state_abbr = st.selectbox("Select a State", list(state_options.keys()), format_func=lambda x: state_options[x])
     
-    filtered_data = filter_applications_by_state(applications_data, selected_state)
+    filtered_data = filter_applications_by_state(applications_data, selected_state_abbr)
     
     st.write("### Applications Data")
     st.dataframe(filtered_data)
     
+    filtered_data['Proposed EPA Funding'] *= 1000  # Convert to actual amounts
     plot_bar_chart(filtered_data, 'Primary Applicant', 'Proposed EPA Funding', 
-                   f'Proposed EPA Funding for {selected_state}', 'Primary Applicant', 'Proposed EPA Funding ($)')
+                   f'Proposed EPA Funding for {state_options[selected_state_abbr]}', 'Primary Applicant', 'Proposed EPA Funding ($)')
     
     total_funding = filtered_data['Proposed EPA Funding'].sum()
-    st.write(f"### Total Proposed EPA Funding for {selected_state}: ${total_funding:,.2f}")
+    st.write(f"### Total Proposed EPA Funding for {state_options[selected_state_abbr]}: ${total_funding:,.2f}")
 
 # Function to filter awards data by EPA region
 def filter_awards_by_region(data, region):
@@ -66,16 +85,17 @@ def visualize_awards():
     
     filtered_data = filter_awards_by_region(awards_data, selected_region)
     
+    st.image('https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/eparegions.png?raw=true', caption='EPA Regions Map', use_column_width=True)
+    
     st.write("### Awards Data")
     st.dataframe(filtered_data)
     
+    filtered_data['Amount Awarded'] *= 1000  # Convert to actual amounts
     plot_bar_chart(filtered_data, 'Grant Recipient', 'Amount Awarded', 
                    f'Amount Awarded in EPA Region {selected_region}', 'Grant Recipient', 'Amount Awarded ($)')
     
-    total_awarded = filtered_data['Amount Awarded'].replace('[\$,]', '', regex=True).astype(float).sum()
+    total_awarded = filtered_data['Amount Awarded'].sum()
     st.write(f"### Total Amount Awarded in EPA Region {selected_region}: ${total_awarded:,.2f}")
-    
-    st.image('https://github.com/Ahhfjarawan3/ENG-220-MATLAB-PROJECTS/blob/main/datasets/eparegions.png?raw=true', caption='EPA Regions Map')
 
 # Visualization for Dataset 3
 def visualize_budget():
